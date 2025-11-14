@@ -69,6 +69,11 @@
   background: transparent !important;
   color: #19c0ff !important;
   font-weight: 600;
+  position: relative;
+}
+
+.double-panel-datepicker-popover .custom-today .ant-picker-cell-inner {
+  position: relative;
 }
 
 .double-panel-datepicker-popover .custom-today .ant-picker-cell-inner::before {
@@ -78,6 +83,19 @@
   border: 1px solid #19c0ff;
   border-radius: 4px;
   pointer-events: none;
+  z-index: 1;
+}
+
+/* css for today is selected  */
+.double-panel-datepicker-popover .custom-today.custom-selected .ant-picker-cell-inner {
+  color: #19c0ff !important;
+  font-weight: 600 !important;
+  background: transparent !important;
+}
+
+.double-panel-datepicker-popover .custom-today.custom-selected .ant-picker-cell-inner::before {
+  border: 2px solid #19c0ff !important;
+  z-index: 1;
 }
 
 

@@ -9,6 +9,7 @@ interface DoublePanelDatePickerProps {
   disabled?: boolean;
   disabledDate?: (current: Dayjs) => boolean;
   placement?: "bottom" | "bottomLeft" | "bottomRight";
+  status?: "" | "error" | "warning";
 }
 
 const CalendarIcon = () => (
@@ -37,6 +38,7 @@ export default function DoublePanelDatePicker({
   disabled = false,
   disabledDate,
   placement = "bottom",
+  status = "",
 }: DoublePanelDatePickerProps) {
   const [open, setOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(() =>
@@ -196,6 +198,7 @@ export default function DoublePanelDatePicker({
         prefix={<CalendarIcon />}
         className="cursor-pointer"
         onClick={() => !disabled && setOpen(true)}
+        status={status}
       />
     </Popover>
   );

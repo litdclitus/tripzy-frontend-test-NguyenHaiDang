@@ -1,14 +1,7 @@
 import { Checkbox } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import DoublePanelDatePicker from "./DoublePanelDatePicker";
-
-interface ReturnDateInputProps {
-  value: Dayjs | null;
-  onChange: (date: Dayjs | null) => void;
-  isRoundTrip: boolean;
-  onRoundTripChange: (checked: boolean) => void;
-  departureDate: Dayjs | null;
-}
+import { ReturnDateInputProps } from "./types";
 
 export default function ReturnDateInput({
   value,
@@ -16,6 +9,7 @@ export default function ReturnDateInput({
   isRoundTrip,
   onRoundTripChange,
   departureDate,
+  error,
 }: ReturnDateInputProps) {
   return (
     <div>
@@ -33,18 +27,26 @@ export default function ReturnDateInput({
           Round Trip
         </label>
       </div>
-      <DoublePanelDatePicker
-        value={value}
-        onChange={onChange}
-        placeholder="DD / MM / YYYY / 00:00"
-        disabled={!isRoundTrip}
-        placement="bottomLeft"
-        disabledDate={(current) => {
-          if (!departureDate)
-            return current && current.isBefore(dayjs().startOf("day"));
-          return current && current.isBefore(departureDate.startOf("day"));
-        }}
-      />
+      <div className="relative">
+        <DoublePanelDatePicker
+          value={value}
+          onChange={onChange}
+          placeholder="DD / MM / YYYY / 00:00"
+          disabled={!isRoundTrip}
+          placement="bottomLeft"
+          disabledDate={(current) => {
+            if (!departureDate)
+              return current && current.isBefore(dayjs().startOf("day"));
+            return current && current.isBefore(departureDate.startOf("day"));
+          }}
+          status={error ? "error" : ""}
+        />
+        {error && (
+          <div className="absolute left-0 top-full text-red-500 text-xs mt-1">
+            {error}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

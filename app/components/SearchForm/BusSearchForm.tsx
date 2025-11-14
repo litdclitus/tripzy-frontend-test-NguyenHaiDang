@@ -1,30 +1,11 @@
 import { Row, Col } from "antd";
-import { Dayjs } from "dayjs";
 import LocationInput from "./LocationInput";
 import SwapButton from "./SwapButton";
 import DepartureDateInput from "./DepartureDateInput";
 import ReturnDateInput from "./ReturnDateInput";
 import PassengerInput from "./PassengerInput";
 import SearchButton from "./SearchButton";
-
-interface BusSearchFormProps {
-  fromLocation: string;
-  toLocation: string;
-  departureDate: Dayjs | null;
-  returnDate: Dayjs | null;
-  isRoundTrip: boolean;
-  passengers: number;
-  isSwapped: boolean;
-  locations: { value: string; label: string }[];
-  onFromChange: (value: string) => void;
-  onToChange: (value: string) => void;
-  onDepartureDateChange: (date: Dayjs | null) => void;
-  onReturnDateChange: (date: Dayjs | null) => void;
-  onRoundTripChange: (checked: boolean) => void;
-  onPassengersChange: (value: number) => void;
-  onSwap: () => void;
-  onSearch?: () => void;
-}
+import { BusSearchFormProps } from "./types";
 
 export default function BusSearchForm({
   fromLocation,
@@ -33,8 +14,8 @@ export default function BusSearchForm({
   returnDate,
   isRoundTrip,
   passengers,
-  isSwapped,
-  locations,
+  availableLocations,
+  errors,
   onFromChange,
   onToChange,
   onDepartureDateChange,
@@ -48,22 +29,15 @@ export default function BusSearchForm({
     <div className="space-y-4">
       <Row gutter={[16, 16]} align="bottom">
         {/* FROM/TO */}
-        <Col xs={24} sm={11} lg={{ flex: '0 0 228px' }}>
-          {isSwapped ? (
-            <LocationInput
-              label="To"
-              value={toLocation}
-              onChange={onToChange}
-              options={locations}
-            />
-          ) : (
-            <LocationInput
-              label="From"
-              value={fromLocation}
-              onChange={onFromChange}
-              options={locations}
-            />
-          )}
+        <Col xs={24} sm={11} lg={{ flex: "0 0 228px" }}>
+          <LocationInput
+            label="From"
+            value={fromLocation}
+            onChange={onFromChange}
+            availableLocations={availableLocations}
+            excludedLocation={toLocation}
+            error={errors.fromLocation}
+          />
         </Col>
 
         {/* Swap */}
@@ -71,22 +45,15 @@ export default function BusSearchForm({
           <SwapButton onClick={onSwap} />
         </Col>
 
-        <Col xs={24} sm={11} lg={{ flex: '0 0 228px' }}>
-          {isSwapped ? (
-            <LocationInput
-              label="From"
-              value={fromLocation}
-              onChange={onFromChange}
-              options={locations}
-            />
-          ) : (
-            <LocationInput
-              label="To"
-              value={toLocation}
-              onChange={onToChange}
-              options={locations}
-            />
-          )}
+        <Col xs={24} sm={11} lg={{ flex: "0 0 228px" }}>
+          <LocationInput
+            label="To"
+            value={toLocation}
+            onChange={onToChange}
+            availableLocations={availableLocations}
+            excludedLocation={fromLocation}
+            error={errors.toLocation}
+          />
         </Col>
 
         {/* DEPARTURE DATE */}
@@ -94,6 +61,7 @@ export default function BusSearchForm({
           <DepartureDateInput
             value={departureDate}
             onChange={onDepartureDateChange}
+            error={errors.departureDate}
           />
         </Col>
 
@@ -105,6 +73,7 @@ export default function BusSearchForm({
             isRoundTrip={isRoundTrip}
             onRoundTripChange={onRoundTripChange}
             departureDate={departureDate}
+            error={errors.returnDate}
           />
         </Col>
 

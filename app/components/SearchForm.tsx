@@ -6,7 +6,8 @@ import { Tabs } from "antd";
 import { Dayjs } from "dayjs";
 import styles from "./SearchForm/SearchForm.module.css";
 import BusSearchForm from "./SearchForm/BusSearchForm";
-import { TAB_CONFIG, LOCATIONS } from "./SearchForm/types";
+import { TAB_CONFIG, ValidationErrors } from "./SearchForm/types";
+import { locations } from "@/app/data/locations";
 
 export default function SearchForm() {
   const [activeTab, setActiveTab] = useState("bus");
@@ -16,13 +17,86 @@ export default function SearchForm() {
   const [returnDate, setReturnDate] = useState<Dayjs | null>(null);
   const [isRoundTrip, setIsRoundTrip] = useState(false);
   const [passengers, setPassengers] = useState<number>(1);
-  const [isSwapped, setIsSwapped] = useState(false);
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
   const handleSwapLocations = () => {
     const temp = fromLocation;
     setFromLocation(toLocation);
     setToLocation(temp);
-    setIsSwapped(!isSwapped);
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+
+    if (!fromLocation.trim()) {
+      newErrors.fromLocation = "Please select departure location";
+    }
+
+    if (!toLocation.trim()) {
+      newErrors.toLocation = "Please select destination";
+    }
+
+    if (!departureDate) {
+      newErrors.departureDate = "Please select departure date";
+    }
+
+    if (isRoundTrip && !returnDate) {
+      newErrors.returnDate = "Please select return date";
+    }
+
+    // return date is not before departure date
+    if (isRoundTrip && returnDate && departureDate) {
+      if (returnDate.isBefore(departureDate.startOf("day"))) {
+        newErrors.returnDate = "Return date cannot be before departure date";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSearch = () => {
+    if (validateForm()) {
+      // Clear errors if validation passes
+      setErrors({});
+      // Navigate to search page or perform search
+      console.log("Search:", {
+        fromLocation,
+        toLocation,
+        departureDate,
+        returnDate,
+        passengers,
+      });
+    }
+  };
+
+  // Clear error when user changes the field
+  const handleFromChange = (value: string) => {
+    setFromLocation(value);
+    if (errors.fromLocation) {
+      setErrors({ ...errors, fromLocation: undefined });
+    }
+  };
+
+  const handleToChange = (value: string) => {
+    setToLocation(value);
+    if (errors.toLocation) {
+      setErrors({ ...errors, toLocation: undefined });
+    }
+  };
+
+  const handleDepartureDateChange = (date: Dayjs | null) => {
+    setDepartureDate(date);
+    if (errors.departureDate) {
+      setErrors({ ...errors, departureDate: undefined });
+    }
+  };
+
+  const handleReturnDateChange = (date: Dayjs | null) => {
+    setReturnDate(date);
+    if (errors.returnDate) {
+      setErrors({ ...errors, returnDate: undefined });
+    }
   };
 
   const currentTabConfig = TAB_CONFIG.find((tab) => tab.key === activeTab);
@@ -62,15 +136,16 @@ export default function SearchForm() {
           returnDate={returnDate}
           isRoundTrip={isRoundTrip}
           passengers={passengers}
-          isSwapped={isSwapped}
-          locations={LOCATIONS}
-          onFromChange={setFromLocation}
-          onToChange={setToLocation}
-          onDepartureDateChange={setDepartureDate}
-          onReturnDateChange={setReturnDate}
+          availableLocations={locations}
+          errors={errors}
+          onFromChange={handleFromChange}
+          onToChange={handleToChange}
+          onDepartureDateChange={handleDepartureDateChange}
+          onReturnDateChange={handleReturnDateChange}
           onRoundTripChange={setIsRoundTrip}
           onPassengersChange={setPassengers}
           onSwap={handleSwapLocations}
+          onSearch={handleSearch}
         />
       );
     }
