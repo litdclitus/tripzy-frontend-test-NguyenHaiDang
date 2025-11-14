@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Tabs } from "antd";
 import { Dayjs } from "dayjs";
 import styles from "./SearchForm/SearchForm.module.css";
@@ -10,6 +11,7 @@ import { TAB_CONFIG, ValidationErrors } from "./SearchForm/types";
 import { locations } from "@/app/data/locations";
 
 export default function SearchForm() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("bus");
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
@@ -44,7 +46,7 @@ export default function SearchForm() {
       newErrors.returnDate = "Please select return date";
     }
 
-    // return date is not before departure date
+    // date is not before departure date
     if (isRoundTrip && returnDate && departureDate) {
       if (returnDate.isBefore(departureDate.startOf("day"))) {
         newErrors.returnDate = "Return date cannot be before departure date";
@@ -59,18 +61,23 @@ export default function SearchForm() {
     if (validateForm()) {
       // Clear errors if validation passes
       setErrors({});
-      // Navigate to search page or perform search
-      console.log("Search:", {
-        fromLocation,
-        toLocation,
-        departureDate,
-        returnDate,
-        passengers,
-      });
+      
+      // Build query parameters
+      const params = new URLSearchParams();
+      params.append("mode", activeTab);
+      params.append("from", fromLocation);
+      params.append("to", toLocation);
+      params.append("dep", departureDate!.format("YYYY-MM-DD"));
+      if (isRoundTrip && returnDate) {
+        params.append("ret", returnDate.format("YYYY-MM-DD"));
+      }
+      params.append("pax", passengers.toString());
+
+      router.push(`/search?${params.toString()}`);
     }
   };
 
-  // Clear error when user changes the field
+  // Clear error when data filled
   const handleFromChange = (value: string) => {
     setFromLocation(value);
     if (errors.fromLocation) {
