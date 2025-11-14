@@ -1,12 +1,7 @@
 import { AutoComplete } from "antd";
 import Image from "next/image";
-
-interface LocationInputProps {
-  label: "From" | "To";
-  value: string;
-  onChange: (value: string) => void;
-  options: { value: string; label: string }[];
-}
+import { filterLocations } from "@/app/data/locations";
+import { LocationInputProps } from "./types";
 
 const FromToIcon = () => (
   <Image
@@ -22,26 +17,65 @@ export default function LocationInput({
   label,
   value,
   onChange,
-  options,
+  availableLocations,
+  excludedLocation,
+  error,
 }: LocationInputProps) {
+  const getFilteredOptions = (searchValue: string) => {
+    let filtered = availableLocations;
+
+    if (excludedLocation) {
+      filtered = filtered.filter(
+        (loc) =>
+          loc.english_name !== excludedLocation &&
+          loc.short_code !== excludedLocation &&
+          loc.code_state !== excludedLocation
+      );
+    }
+
+    if (searchValue) {
+      filtered = filterLocations(searchValue, filtered);
+    }
+
+    return filtered.map((location) => ({
+      value: location.english_name,
+      label: (
+        <div style={{ padding: "8px" }}>
+          <div className="text-sm font-normal text-gray-900">
+            {location.short_code} - {location.english_name}
+          </div>
+          <div className="text-xs text-gray-500">{location.code_state}</div>
+        </div>
+      ),
+    }));
+  };
+
   return (
     <div>
       <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase">
         {label}
       </label>
-      <AutoComplete
-        size="large"
-        value={value}
-        onChange={onChange}
-        options={options}
-        placeholder="Enter city, terminal..."
-        filterOption={(inputValue, option) =>
-          option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-        }
-        className="w-full"
-        popupClassName="location-dropdown"
-        prefix={<FromToIcon />}
-      />
+      <div className="relative">
+        <AutoComplete
+          size="large"
+          value={value}
+          onChange={onChange}
+          options={getFilteredOptions(value)}
+          placeholder="Enter city, terminal..."
+          className="w-full"
+          prefix={<FromToIcon />}
+          filterOption={false}
+          popupMatchSelectWidth={false}
+          dropdownStyle={{ width: 324 }}
+          listHeight={310}
+          status={error ? "error" : ""}
+        />
+        {error && (
+          <div className="absolute left-0 top-full text-red-500 text-xs mt-1">
+            {error}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

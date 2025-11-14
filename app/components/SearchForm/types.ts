@@ -1,3 +1,6 @@
+import { Dayjs } from "dayjs";
+import { Location } from "@/app/data/locations";
+
 export interface TabConfig {
   key: string;
   label: string;
@@ -34,14 +37,58 @@ export const TAB_CONFIG: TabConfig[] = [
   },
 ];
 
-export const LOCATIONS = [
-  { value: "Ben Thanh", label: "Ben Thanh" },
-  { value: "District 1", label: "District 1" },
-  { value: "District 3", label: "District 3" },
-  { value: "Tan Binh", label: "Tan Binh" },
-  { value: "Binh Thanh", label: "Binh Thanh" },
-  { value: "Phu Nhuan", label: "Phu Nhuan" },
-  { value: "Go Vap", label: "Go Vap" },
-  { value: "Thu Duc", label: "Thu Duc" },
-];
+export interface ValidationErrors {
+  fromLocation?: string;
+  toLocation?: string;
+  departureDate?: string;
+  returnDate?: string;
+}
+
+export interface LocationInputProps {
+  label: "From" | "To";
+  value: string;
+  onChange: (value: string) => void;
+  availableLocations: Location[];
+  excludedLocation?: string;
+  error?: string;
+}
+
+export interface DepartureDateInputProps {
+  value: Dayjs | null;
+  onChange: (date: Dayjs | null) => void;
+  error?: string;
+}
+
+export interface ReturnDateInputProps {
+  value: Dayjs | null;
+  onChange: (date: Dayjs | null) => void;
+  isRoundTrip: boolean;
+  onRoundTripChange: (checked: boolean) => void;
+  departureDate: Dayjs | null;
+  error?: string;
+}
+
+export interface PassengerInputProps {
+  value: number;
+  onChange: (value: number) => void;
+}
+
+export interface BusSearchFormProps {
+  fromLocation: string;
+  toLocation: string;
+  departureDate: Dayjs | null;
+  returnDate: Dayjs | null;
+  isRoundTrip: boolean;
+  passengers: number;
+  availableLocations: Location[];
+  errors: ValidationErrors;
+  onFromChange: (value: string) => void;
+  onToChange: (value: string) => void;
+  onDepartureDateChange: (date: Dayjs | null) => void;
+  onReturnDateChange: (date: Dayjs | null) => void;
+  onRoundTripChange: (checked: boolean) => void;
+  onPassengersChange: (value: number) => void;
+  onSwap: () => void;
+  onSearch?: () => void;
+}
 

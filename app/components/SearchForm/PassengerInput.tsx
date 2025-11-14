@@ -1,9 +1,5 @@
 import { InputNumber } from "antd";
-
-interface PassengerInputProps {
-  value: number;
-  onChange: (value: number) => void;
-}
+import { PassengerInputProps } from "./types";
 
 const PassengerIcon = () => (
   <svg
