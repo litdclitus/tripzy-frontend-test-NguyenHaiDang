@@ -129,4 +129,4 @@ app/
 
 ## Demo
 
-- [Live Demo Link](https://tripzy-app-demo.vercel.app/)
+- [Vercel Demo Link](https://tripzy-app-demo.vercel.app/)
