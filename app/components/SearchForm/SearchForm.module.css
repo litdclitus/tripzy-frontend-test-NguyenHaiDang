@@ -1,0 +1,83 @@
+/* SearchForm Component Styles */
+
+.searchCard {
+  max-width: 1170px;
+  min-height: 320px;
+}
+
+.cardHeader {
+  position: relative;
+  height: 96px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom Tabs Styling */
+.customTabs :global(.ant-tabs-nav) {
+  margin: 0 !important;
+  position: relative;
+  z-index: 1;
+  height: 96px;
+}
+
+.customTabs :global(.ant-tabs-nav::before) {
+  display: none;
+}
+
+.customTabs :global(.ant-tabs-nav-wrap) {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.customTabs :global(.ant-tabs-nav-list) {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 100%;
+}
+
+.customTabs :global(.ant-tabs-tab) {
+  flex: 1;
+  margin: 0 !important;
+  padding: 0 24px !important;
+  font-weight: 600;
+  font-size: 14px;
+  justify-content: flex-start;
+  transition: all 0.3s ease;
+  color: #111827 !important;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.customTabs :global(.ant-tabs-tab:hover) {
+  color: #111827 !important;
+}
+
+.customTabs :global(.ant-tabs-tab-active) {
+  color: #111827 !important;
+  font-weight: 600;
+}
+
+.customTabs :global(.ant-tabs-tab-btn) {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.customTabs :global(.ant-tabs-ink-bar) {
+  display: none;
+}
+
+.customTabs :global(.ant-tabs-content-holder) {
+  display: none;
+}
+
+.customTabs :global(.ant-tabs-content) {
+  display: none;
+}
+
