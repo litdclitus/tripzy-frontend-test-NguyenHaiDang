@@ -126,3 +126,7 @@ app/
 - [Ant Design Documentation](https://ant.design/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/)
 - [Day.js Documentation](https://day.js.org/)
+
+## Demo
+
+- [Live Demo Link](https://tripzy-app-demo.vercel.app/)
