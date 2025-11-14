@@ -36,7 +36,7 @@ export default function ReturnDateInput({
       <DoublePanelDatePicker
         value={value}
         onChange={onChange}
-        placeholder="DD / MM / YYYY"
+        placeholder="DD / MM / YYYY / 00:00"
         disabled={!isRoundTrip}
         placement="bottomLeft"
         disabledDate={(current) => {

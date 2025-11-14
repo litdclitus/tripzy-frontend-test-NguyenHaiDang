@@ -46,7 +46,7 @@ export default function SearchForm() {
             className="transition-all duration-300"
           />
         </div>
-        <span className="text-gray-900">{tab.label}</span>
+        <span className="text-gray-900 text-lg">{tab.label}</span>
       </div>
     ),
     children: null,
@@ -115,7 +115,7 @@ export default function SearchForm() {
       </div>
 
       {/* Content Body */}
-      <div className="px-6 pb-6 mt-6">{renderContent()}</div>
+      <div className="px-4 pb-6 mt-6">{renderContent()}</div>
     </div>
   );
 }

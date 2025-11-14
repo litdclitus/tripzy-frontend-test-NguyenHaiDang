@@ -44,6 +44,10 @@ export default function RootLayout({
               components: {
                 Button: {
                   colorPrimary: "#19C0FF",
+                  controlHeightLG: 52,
+                  paddingBlockLG: 16,
+                  paddingInlineLG: 20,
+                  contentFontSizeLG: 14,
                 },
                 Input: {
                   inputFontSizeLG: 14,
@@ -54,10 +58,11 @@ export default function RootLayout({
                   inputFontSizeLG: 14,
                   controlHeightLG: 52,
                   fontSizeLG: 14,
+                  controlWidth: 149,
                 },
                 Select: {
-                  optionHeight: 51,
                   singleItemHeightLG: 52,
+                  fontSizeLG: 14,
                 },
                 DatePicker: {
                   controlHeightLG: 52,

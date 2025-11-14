@@ -46,9 +46,9 @@ export default function BusSearchForm({
 }: BusSearchFormProps) {
   return (
     <div className="space-y-4">
-      <Row gutter={[8, 16]} align="bottom">
+      <Row gutter={[16, 16]} align="bottom">
         {/* FROM/TO */}
-        <Col xs={24} sm={11} lg={5}>
+        <Col xs={24} sm={11} lg={{ flex: '0 0 228px' }}>
           {isSwapped ? (
             <LocationInput
               label="To"
@@ -67,11 +67,11 @@ export default function BusSearchForm({
         </Col>
 
         {/* Swap */}
-        <Col flex="0 0 48px" className="flex justify-center items-end">
+        <Col flex="0 0 48px" className="flex justify-center items-end px-0!">
           <SwapButton onClick={onSwap} />
         </Col>
 
-        <Col xs={24} sm={11} lg={5}>
+        <Col xs={24} sm={11} lg={{ flex: '0 0 228px' }}>
           {isSwapped ? (
             <LocationInput
               label="From"
@@ -90,7 +90,7 @@ export default function BusSearchForm({
         </Col>
 
         {/* DEPARTURE DATE */}
-        <Col xs={24} sm={12} md={8} lg={4}>
+        <Col xs={24} sm={12} md={8} lg={5}>
           <DepartureDateInput
             value={departureDate}
             onChange={onDepartureDateChange}
@@ -98,7 +98,7 @@ export default function BusSearchForm({
         </Col>
 
         {/* RETURN DATE */}
-        <Col xs={24} sm={12} md={8} lg={4}>
+        <Col xs={24} sm={12} md={8} lg={5}>
           <ReturnDateInput
             value={returnDate}
             onChange={onReturnDateChange}
@@ -109,7 +109,7 @@ export default function BusSearchForm({
         </Col>
 
         {/* NUMBER OF PASSENGER */}
-        <Col xs={24} sm={12} md={8} lg={4}>
+        <Col xs={24} sm={12} lg={3}>
           <PassengerInput value={passengers} onChange={onPassengersChange} />
         </Col>
       </Row>

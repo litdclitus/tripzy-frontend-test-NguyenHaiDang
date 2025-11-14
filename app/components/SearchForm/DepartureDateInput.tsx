@@ -18,7 +18,7 @@ export default function DepartureDateInput({
       <DoublePanelDatePicker
         value={value}
         onChange={onChange}
-        placeholder="DD / MM / YYYY"
+        placeholder="DD / MM / YYYY / 00:00"
         placement="bottomRight"
         disabledDate={(current) => {
           return current && current.isBefore(dayjs().startOf("day"));
