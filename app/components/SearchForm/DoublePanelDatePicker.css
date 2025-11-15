@@ -98,12 +98,6 @@
   z-index: 1;
 }
 
-
-/* Hover effect */
-.double-panel-datepicker-popover .ant-picker-cell:hover:not(.ant-picker-cell-selected):not(.ant-picker-cell-disabled) .ant-picker-cell-inner {
-  background: #e6f7ff;
-}
-
 /* sat & sun */
 .double-panel-datepicker-popover .custom-weekend .ant-picker-cell-inner {
   color: #ff4d4f !important;
@@ -123,5 +117,17 @@
 /* Header month/year */
 .double-panel-datepicker-popover .ant-picker-calendar-header {
   padding: 4px 0;
+}
+
+/* Outside month dates */
+.double-panel-datepicker-popover .custom-outside-month .ant-picker-cell-inner {
+  color: rgba(0, 0, 0, 0.25) !important;
+  background: transparent !important;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+.double-panel-datepicker-popover .custom-outside-month:hover .ant-picker-cell-inner {
+  background: transparent !important;
 }
 

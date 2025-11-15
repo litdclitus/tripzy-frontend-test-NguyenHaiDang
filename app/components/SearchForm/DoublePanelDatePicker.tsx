@@ -78,15 +78,20 @@ export default function DoublePanelDatePicker({
             const dayOfWeek = current.day();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
             const isDisabled = disabledDate ? disabledDate(current) : false;
+            const isOutsideMonth = !isInCurrentMonth;
 
             return (
               <div
                 className={`ant-picker-cell ant-picker-cell-in-view ${
                   isSelected && isInCurrentMonth ? "custom-selected" : ""
                 } ${isToday ? "custom-today" : ""} ${
-                  isWeekend && !isDisabled ? "custom-weekend" : ""
-                } ${isDisabled ? "ant-picker-cell-disabled" : ""}`}
-                onClick={() => !isDisabled && handleSelect(current)}
+                  isWeekend && !isDisabled && isInCurrentMonth ? "custom-weekend" : ""
+                } ${
+                  isDisabled ? "ant-picker-cell-disabled" : ""
+                } ${
+                  isOutsideMonth ? "custom-outside-month" : ""
+                }`}
+                onClick={() => !isDisabled && !isOutsideMonth && handleSelect(current)}
               >
                 <div className="ant-picker-cell-inner">{current.date()}</div>
               </div>
@@ -135,15 +140,20 @@ export default function DoublePanelDatePicker({
             const dayOfWeek = current.day();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
             const isDisabled = disabledDate ? disabledDate(current) : false;
+            const isOutsideMonth = !isInNextMonth;
 
             return (
               <div
                 className={`ant-picker-cell ant-picker-cell-in-view ${
                   isSelected && isInNextMonth ? "custom-selected" : ""
                 } ${isToday ? "custom-today" : ""} ${
-                  isWeekend && !isDisabled ? "custom-weekend" : ""
-                } ${isDisabled ? "ant-picker-cell-disabled" : ""}`}
-                onClick={() => !isDisabled && handleSelect(current)}
+                  isWeekend && !isDisabled && isInNextMonth ? "custom-weekend" : ""
+                } ${
+                  isDisabled ? "ant-picker-cell-disabled" : ""
+                } ${
+                  isOutsideMonth ? "custom-outside-month" : ""
+                }`}
+                onClick={() => !isDisabled && !isOutsideMonth && handleSelect(current)}
               >
                 <div className="ant-picker-cell-inner">{current.date()}</div>
               </div>
