@@ -1,5 +1,6 @@
 import { AutoComplete } from "antd";
 import Image from "next/image";
+import { useMemo, useState, useCallback } from "react";
 import { filterLocations } from "@/app/data/locations";
 import { LocationInputProps } from "./types";
 
@@ -21,7 +22,10 @@ export default function LocationInput({
   excludedLocation,
   error,
 }: LocationInputProps) {
-  const getFilteredOptions = (searchValue: string) => {
+  const [searchValue, setSearchValue] = useState(value);
+
+  // Memoize filtered options
+  const options = useMemo(() => {
     let filtered = availableLocations;
 
     if (excludedLocation) {
@@ -48,7 +52,16 @@ export default function LocationInput({
         </div>
       ),
     }));
-  };
+  }, [availableLocations, excludedLocation, searchValue]);
+
+  const handleSearch = useCallback((val: string) => {
+    setSearchValue(val);
+  }, []);
+
+  const handleChange = useCallback((val: string) => {
+    setSearchValue(val);
+    onChange(val);
+  }, [onChange]);
 
   return (
     <div>
@@ -59,8 +72,9 @@ export default function LocationInput({
         <AutoComplete
           size="large"
           value={value}
-          onChange={onChange}
-          options={getFilteredOptions(value)}
+          onChange={handleChange}
+          onSearch={handleSearch}
+          options={options}
           placeholder="Enter city, terminal..."
           className="w-full"
           prefix={<FromToIcon />}

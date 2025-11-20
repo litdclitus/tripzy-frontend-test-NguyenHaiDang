@@ -1,14 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { Tabs } from "antd";
 import { Dayjs } from "dayjs";
 import styles from "./SearchForm/SearchForm.module.css";
-import BusSearchForm from "./SearchForm/BusSearchForm";
 import { TAB_CONFIG, ValidationErrors } from "./SearchForm/types";
 import { locations } from "@/app/data/locations";
+
+// Lazy load the BusSearchForm component
+const BusSearchForm = lazy(() => import("./SearchForm/BusSearchForm"));
 
 export default function SearchForm() {
   const router = useRouter();
@@ -59,7 +61,6 @@ export default function SearchForm() {
 
   const handleSearch = () => {
     if (validateForm()) {
-      // Clear errors if validation passes
       setErrors({});
       
       // Build query parameters
@@ -77,7 +78,6 @@ export default function SearchForm() {
     }
   };
 
-  // Clear error when data filled
   const handleFromChange = (value: string) => {
     setFromLocation(value);
     if (errors.fromLocation) {
@@ -136,24 +136,32 @@ export default function SearchForm() {
   const renderContent = () => {
     if (activeTab === "bus") {
       return (
-        <BusSearchForm
-          fromLocation={fromLocation}
-          toLocation={toLocation}
-          departureDate={departureDate}
-          returnDate={returnDate}
-          isRoundTrip={isRoundTrip}
-          passengers={passengers}
-          availableLocations={locations}
-          errors={errors}
-          onFromChange={handleFromChange}
-          onToChange={handleToChange}
-          onDepartureDateChange={handleDepartureDateChange}
-          onReturnDateChange={handleReturnDateChange}
-          onRoundTripChange={setIsRoundTrip}
-          onPassengersChange={setPassengers}
-          onSwap={handleSwapLocations}
-          onSearch={handleSearch}
-        />
+        <Suspense
+          fallback={
+            <div className="py-16 text-center">
+              <div className="animate-pulse text-gray-500">Preparing form...</div>
+            </div>
+          }
+        >
+          <BusSearchForm
+            fromLocation={fromLocation}
+            toLocation={toLocation}
+            departureDate={departureDate}
+            returnDate={returnDate}
+            isRoundTrip={isRoundTrip}
+            passengers={passengers}
+            availableLocations={locations}
+            errors={errors}
+            onFromChange={handleFromChange}
+            onToChange={handleToChange}
+            onDepartureDateChange={handleDepartureDateChange}
+            onReturnDateChange={handleReturnDateChange}
+            onRoundTripChange={setIsRoundTrip}
+            onPassengersChange={setPassengers}
+            onSwap={handleSwapLocations}
+            onSearch={handleSearch}
+          />
+        </Suspense>
       );
     }
     return (

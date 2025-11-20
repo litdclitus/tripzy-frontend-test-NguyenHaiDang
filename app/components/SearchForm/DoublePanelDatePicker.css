@@ -81,7 +81,6 @@
   position: absolute;
   inset: 0;
   border: 1px solid #19c0ff;
-  border-radius: 4px;
   pointer-events: none;
   z-index: 1;
 }

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Row, Col } from "antd";
 import LocationInput from "./LocationInput";
 import SwapButton from "./SwapButton";
@@ -7,7 +8,7 @@ import PassengerInput from "./PassengerInput";
 import SearchButton from "./SearchButton";
 import { BusSearchFormProps } from "./types";
 
-export default function BusSearchForm({
+function BusSearchForm({
   fromLocation,
   toLocation,
   departureDate,
@@ -87,3 +88,5 @@ export default function BusSearchForm({
     </div>
   );
 }
+
+export default memo(BusSearchForm);

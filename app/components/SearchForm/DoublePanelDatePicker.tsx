@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { Input, Popover, Calendar } from "antd";
 import dayjs, { Dayjs } from "dayjs";
+import "./DoublePanelDatePicker.css";
 
 interface DoublePanelDatePickerProps {
   value: Dayjs | null;
@@ -31,7 +32,7 @@ const CalendarIcon = () => (
   </svg>
 );
 
-export default function DoublePanelDatePicker({
+function DoublePanelDatePicker({
   value,
   onChange,
   placeholder = "DD / MM / YYYY",
@@ -45,25 +46,55 @@ export default function DoublePanelDatePicker({
     value ? dayjs(value) : dayjs()
   );
 
-  const handleSelect = (date: Dayjs) => {
+  const handleSelect = useCallback((date: Dayjs) => {
     onChange(date);
     setOpen(false);
-  };
+  }, [onChange]);
 
-  const handlePrevMonth = (e: React.MouseEvent) => {
+  const handlePrevMonth = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentMonth(currentMonth.subtract(1, "month"));
-  };
+    setCurrentMonth(prev => prev.subtract(1, "month"));
+  }, []);
 
-  const handleNextMonth = (e: React.MouseEvent) => {
+  const handleNextMonth = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentMonth(currentMonth.add(1, "month"));
-  };
+    setCurrentMonth(prev => prev.add(1, "month"));
+  }, []);
 
-  const content = (
-    <div className="flex gap-8 p-2 bg-white">
+  const nextMonth = useMemo(() => currentMonth.add(1, "month"), [currentMonth]);
+
+  // Memoize calendar cell renderer
+  const renderCell = useCallback((current: Dayjs, month: Dayjs) => {
+    const isSelected = value && current.isSame(value, "day");
+    const isInCurrentMonth = current.isSame(month, "month");
+    const isToday = current.isSame(dayjs(), "day");
+    const dayOfWeek = current.day();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isDisabled = disabledDate ? disabledDate(current) : false;
+    const isOutsideMonth = !isInCurrentMonth;
+
+    return (
+      <div
+        className={`ant-picker-cell ant-picker-cell-in-view ${
+          isSelected && isInCurrentMonth ? "custom-selected" : ""
+        } ${isToday ? "custom-today" : ""} ${
+          isWeekend && !isDisabled && isInCurrentMonth ? "custom-weekend" : ""
+        } ${
+          isDisabled ? "ant-picker-cell-disabled" : ""
+        } ${
+          isOutsideMonth ? "custom-outside-month" : ""
+        }`}
+        onClick={() => !isDisabled && !isOutsideMonth && handleSelect(current)}
+      >
+        <div className="ant-picker-cell-inner">{current.date()}</div>
+      </div>
+    );
+  }, [value, disabledDate, handleSelect]);
+
+  const content = useMemo(() => (
+    <div className="flex gap-8 p-2 bg-white rounded-lg">
       {/* Left Calendar*/}
       <div>
         <Calendar
@@ -71,32 +102,7 @@ export default function DoublePanelDatePicker({
           value={currentMonth}
           onSelect={handleSelect}
           disabledDate={disabledDate}
-          fullCellRender={(current) => {
-            const isSelected = value && current.isSame(value, "day");
-            const isInCurrentMonth = current.isSame(currentMonth, "month");
-            const isToday = current.isSame(dayjs(), "day");
-            const dayOfWeek = current.day();
-            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-            const isDisabled = disabledDate ? disabledDate(current) : false;
-            const isOutsideMonth = !isInCurrentMonth;
-
-            return (
-              <div
-                className={`ant-picker-cell ant-picker-cell-in-view ${
-                  isSelected && isInCurrentMonth ? "custom-selected" : ""
-                } ${isToday ? "custom-today" : ""} ${
-                  isWeekend && !isDisabled && isInCurrentMonth ? "custom-weekend" : ""
-                } ${
-                  isDisabled ? "ant-picker-cell-disabled" : ""
-                } ${
-                  isOutsideMonth ? "custom-outside-month" : ""
-                }`}
-                onClick={() => !isDisabled && !isOutsideMonth && handleSelect(current)}
-              >
-                <div className="ant-picker-cell-inner">{current.date()}</div>
-              </div>
-            );
-          }}
+          fullCellRender={(current) => renderCell(current, currentMonth)}
           headerRender={({ value: headerValue }) => {
             return (
               <div className="flex px-2 py-2 items-center justify-start">
@@ -129,36 +135,10 @@ export default function DoublePanelDatePicker({
       <div>
         <Calendar
           fullscreen={false}
-          value={currentMonth.add(1, "month")}
+          value={nextMonth}
           onSelect={handleSelect}
           disabledDate={disabledDate}
-          fullCellRender={(current) => {
-            const isSelected = value && current.isSame(value, "day");
-            const nextMonth = currentMonth.add(1, "month");
-            const isInNextMonth = current.isSame(nextMonth, "month");
-            const isToday = current.isSame(dayjs(), "day");
-            const dayOfWeek = current.day();
-            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-            const isDisabled = disabledDate ? disabledDate(current) : false;
-            const isOutsideMonth = !isInNextMonth;
-
-            return (
-              <div
-                className={`ant-picker-cell ant-picker-cell-in-view ${
-                  isSelected && isInNextMonth ? "custom-selected" : ""
-                } ${isToday ? "custom-today" : ""} ${
-                  isWeekend && !isDisabled && isInNextMonth ? "custom-weekend" : ""
-                } ${
-                  isDisabled ? "ant-picker-cell-disabled" : ""
-                } ${
-                  isOutsideMonth ? "custom-outside-month" : ""
-                }`}
-                onClick={() => !isDisabled && !isOutsideMonth && handleSelect(current)}
-              >
-                <div className="ant-picker-cell-inner">{current.date()}</div>
-              </div>
-            );
-          }}
+          fullCellRender={(current) => renderCell(current, nextMonth)}
           headerRender={({ value: headerValue }) => {
             return (
               <div className="flex px-2 py-2 items-center justify-end">
@@ -187,7 +167,7 @@ export default function DoublePanelDatePicker({
         />
       </div>
     </div>
-  );
+  ), [currentMonth, nextMonth, value, disabledDate, handleSelect, renderCell, handlePrevMonth, handleNextMonth]);
 
   return (
     <Popover
@@ -213,3 +193,5 @@ export default function DoublePanelDatePicker({
     </Popover>
   );
 }
+
+export default memo(DoublePanelDatePicker);
