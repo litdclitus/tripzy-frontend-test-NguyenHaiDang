@@ -22,6 +22,8 @@ export default function Background({
           width={1728}
           height={495}
           priority
+          quality={85}
+          loading="eager"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
